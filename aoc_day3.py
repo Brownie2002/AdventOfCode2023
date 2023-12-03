@@ -7,11 +7,13 @@ def aoc_day3( file ):
     data = pd.read_csv(file, header=None)
     df = data[0].apply(lambda x: pd.Series(list(x)))
 
-    symbols="*#+$/=%&"
     symbols_dict={}
+
     number=""
     is_part_number = False
     part_list=[]
+    gear_dict={}
+    current_gears={}
 
     for y in range(len(df.columns)):
         for x in range(len(df)):
@@ -27,6 +29,11 @@ def aoc_day3( file ):
                         try:
                             if df[x+i][y+j] in symbols_dict:
                                 is_part_number = True
+                                if df[x+i][y+j] == "*":
+                                    # This is a gear
+                                    key=str(x+i) + "-" + str(y+j)
+                                    if key not in current_gears:
+                                        current_gears[key] = True
                                 continue
                         except KeyError:
                             continue
@@ -38,7 +45,13 @@ def aoc_day3( file ):
                     # We reach the end of a number
                     if number and is_part_number:
                         part_list.append(number)
+                        for key in current_gears:
+                            if key not in gear_dict:
+                                gear_dict[key] = []
+                            gear_dict[key].append(number)
+                        
                     number=""
+                    current_gears={}
                     is_part_number=False
     part1 = 0
     part_list_wo_dup = list(dict.fromkeys(part_list))
@@ -46,6 +59,11 @@ def aoc_day3( file ):
         # Duplicate parts are removed
         part1 = part1 + int(value)
     part2 = 0
+    for gear in gear_dict:
+        list_of_parts = gear_dict[gear]
+        if len(list_of_parts) == 2:
+            # This is a correct gear
+            part2= part2 + int(list_of_parts[0])*int(list_of_parts[1])
 
     return part1, part2
 
