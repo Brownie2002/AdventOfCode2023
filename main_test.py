@@ -1,3 +1,4 @@
+from aoc_day3 import aoc_day3
 from main import aoc_day1, aoc_day2
 
 def test_aoc_day1():
@@ -20,3 +21,12 @@ def test_aoc_day2():
     total, power = aoc_day2("inputs/day2.input")
     assert total == 1853
     assert power == 72706
+
+def test_aoc_day3():
+    part1, part2 = aoc_day3("inputs/day3_test.input")
+    assert part1 == 4361
+    assert part2 == 0
+    # My data
+    part1, part2 = aoc_day3("inputs/day3.input")
+    assert part1 == 0
+    assert part2 == 0
