@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 
 def aoc_day2_possible(red, green, blue):
@@ -14,10 +15,13 @@ def aoc_day2_possible(red, green, blue):
 
 def aoc_day2( file ) -> int:
 
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, file)
+
     total = 0
     power = 0
 
-    with open(file) as f:
+    with open(filename) as f:
         for line in f:
             # Check each Game
             test = True

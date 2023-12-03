@@ -1,8 +1,8 @@
 import logging
 import sys
 
-from aoc_day1 import aoc_day1
-from aoc_day2 import aoc_day2
+from day1.aoc_day1 import aoc_day1
+from day2.aoc_day2 import aoc_day2
 
 def main() -> int:
     logging.basicConfig(encoding='utf-8', level=logging.INFO)

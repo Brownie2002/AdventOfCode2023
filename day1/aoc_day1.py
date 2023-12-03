@@ -1,10 +1,16 @@
 import logging
+import os
 import sys
 
 def aoc_day1( file ) -> int:
     """Day 1: Trebuchet?!"""
     # Download the input locally from the AoC server
     # https://adventofcode.com/2023/day/1/input
+
+
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, file)
+
     calibratrion_value=0
     value = {}
 
@@ -15,7 +21,7 @@ def aoc_day1( file ) -> int:
     part="part2"
     for part in "part1", "part2":
         calibratrion_value=0
-        with open(file) as f:
+        with open(filename) as f:
             for line in f:
                 first_index=99999
                 last_index=-1

@@ -1,10 +1,13 @@
-import logging
+import os
 import sys
 import pandas as pd
 
 def aoc_day3( file ):
 
-    data = pd.read_csv(file, header=None)
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, file)
+
+    data = pd.read_csv(filename, header=None)
     df = data[0].apply(lambda x: pd.Series(list(x)))
 
     symbols_dict={}
@@ -69,7 +72,7 @@ def aoc_day3( file ):
 
 def main() -> int:
     # --- Day 3: Gear Ratios ---
-    value_part1, value_part2 = aoc_day3("inputs/day3.input")
+    value_part1, value_part2 = aoc_day3( "inputs/day3.input" )
     print(f"Day 3: part 1 is {value_part1} and part 2 is {value_part2}.")
 
     return 0
