@@ -1,41 +1,53 @@
 import os
 import sys
+import numpy as np
 import pandas as pd
 
-def aoc_day_template( file ):
+def aoc_day4( file ):
+
+    part1 = 0
+    part2 = 1
 
     dirname = os.path.dirname(__file__)
     filename = os.path.join(dirname, file)
 
+    score=0
+
     print(f"Input full path: {filename}")
 
-    data = pd.read_csv(filename, header=None, sep=r"\s+|:")
-    print(data)
-    index=-1
-    for col in data.values[:1][0]:
-        index+=1
-        if col == "|":
-            break
-    print(f"The separator is at position {index}")
+    num_original_cards=0
+    with open(filename, "rb") as f:
+        num_original_cards = sum(1 for _ in f)
 
-    for index, row in data.iterrows():
-        print(row)
-        for item in row.values:
-            print(item)
-        print("tets")
+    nb_cards=np.full(num_original_cards, 1)
 
-    print(col)
+    with open(filename) as f:
+        for line in f:
+            nb_match = 0
+            info=line.rstrip('\n').split(":")
+            card_number=int(info[0].split()[1])
+            winning, having=info[1].strip().split("|")
+            having=having.split()
+            for win_number in winning.split():
+                if win_number in having:
+                    nb_match += 1
+            for new_card in range(nb_match):
+                print(f"with card {card_number} win card {new_card + card_number + 1}")
+                nb_cards[new_card + card_number] +=  nb_cards[card_number - 1]
+            if nb_match > 0:
+                score = score + 2**(nb_match-1)
+
+    part1=score
+    part2=np.sum(nb_cards)  
     # Find card separation column
-    separator=data[:][0].columns.get_loc("|")
 
-    part1 = 0
-    part2 = 1
+
 
     return part1, part2
 
 def main() -> int:
     # --- Day 4: Scratchcards ---
-    value_part1, value_part2 = aoc_day_template( "inputs/day4_test1.input" )
+    value_part1, value_part2 = aoc_day4( "inputs/day4.input" )
     print(f"Day 4: part 1 is {value_part1} and part 2 is {value_part2}.")
 
     return 0
