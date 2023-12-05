@@ -1,4 +1,5 @@
 import logging
+import math
 import os
 import sys
 from time import perf_counter
@@ -56,7 +57,8 @@ def solve( file ):
     for seed_index in range(0,len(seeds),2):
         total_of_seeds += seeds[seed_index+1]
     print(f"Number of seeds : {total_of_seeds}")
-    fraction_01=int(total_of_seeds/10000)
+    fraction_01=math.ceil(total_of_seeds/10000)
+    t1_start = perf_counter()
 
     # All the maps are done, compute way
     index=0
@@ -64,7 +66,8 @@ def solve( file ):
         for seed in range(seeds[seed_index],seeds[seed_index]+seeds[seed_index+1]):
             index += 1
             if (index % fraction_01) == 1:
-                print(f"Reach over {total_of_seeds} reached {index*100/total_of_seeds:.2f}%, index {index}.")
+                t1_stop = perf_counter()
+                print(f"Reach over {total_of_seeds} reached {index*100/total_of_seeds:.2f}% (elapsed(s): {t1_stop-t1_start:.4f}), index {index}.")
             source_category="seed"
             source_number=seed
             seeds_dict={}
