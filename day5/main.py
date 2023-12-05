@@ -5,7 +5,7 @@ import numpy as np
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
-def aoc_day4( file ):
+def solve( file ):
 
     part1 = 0
     part2 = 1
@@ -46,9 +46,10 @@ def aoc_day4( file ):
     return part1, part2
 
 def main() -> int:
-    # --- Day 4: Scratchcards ---
-    value_part1, value_part2 = aoc_day4( "inputs/day4.input" )
-    print(f"Day 4: part 1 is {value_part1} and part 2 is {value_part2}.")
+    # --- Day 5: If You Give A Seed A Fertilizer ---
+    # https://adventofcode.com/2023/day/5
+    value_part1, value_part2 = solve( "inputs/test1.input" )
+    print(f"Day 5: part 1 is {value_part1} and part 2 is {value_part2}.")
 
     return 0
 
