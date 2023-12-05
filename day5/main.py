@@ -6,98 +6,6 @@ from time import perf_counter
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
-def compute_target_number( source, rules ):
-
-    target=source
-    remaining_range=1
-
-    # Check if the source is in a range of the rules
-    for rule in rules:
-        if source >= rule[1] and source < (rule[1] + rule[2]):
-            # I am in the correct range
-            target = source + ( rule[0] - rule[1])
-            remaining_range = rule[0] + rule[2] - target
-
-    return target, remaining_range
-
-def solve( file ):
-
-    part1 = 0
-    part2 = 1
-
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, file)
-
-    seeds=[]
-    maps={}
-    targets={}
-
-    with open(filename, "r") as f:
-        for line in f:
-            if "seeds:" in line:
-                seeds=[int(x) for x in line.split()[1:]]
-                continue
-            if " map:" in line:
-                map=line.split()[0]
-                current_map=map
-                maps[current_map]={}
-                maps[current_map]['rules']=[]
-                source, target= map.split("-to-")
-                targets[source]=target
-                continue
-            if not line.rstrip():
-                # Skip blank line
-                continue
-            
-            # We are on a line with numbers "dst_start, src_start, nb"
-            maps[current_map]['rules'].append([int(x) for x in line.split()])
-
-    part1=1e12
-
-    total_of_seeds=0
-    for seed_index in range(0,len(seeds),2):
-        total_of_seeds += seeds[seed_index+1]
-    print(f"Number of seeds : {total_of_seeds}")
-    fraction_01=math.ceil(total_of_seeds/10000)
-    t1_start = perf_counter()
-
-    # All the maps are done, compute way
-    index=0
-    for seed_index in range(0,len(seeds),2):
-        for seed in range(seeds[seed_index],seeds[seed_index]+seeds[seed_index+1]):
-            index += 1
-            if (index % fraction_01) == 1:
-                t1_stop = perf_counter()
-                print(f"Reach over {total_of_seeds} reached {index*100/total_of_seeds:.2f}% (elapsed(s): {t1_stop-t1_start:.4f}), index {index}.")
-            source_category="seed"
-            source_number=seed
-            seeds_dict={}
-#            print(f"{source_category} {source_number}, ", end="")
-            while True:
-                # Select the map
-                try:
-                    target_category=targets[source_category]
-                except:
-                    break
-                map=source_category+"-to-"+target_category
-
-                target_number=compute_target_number(source_number, maps[map]['rules'])
-
-#                print(f"{target_category} {target_number}, ", end="")
-                seeds_dict[target_category]=target_number
-
-                # Prepare next target
-                source_number=target_number
-                source_category=target_category
-#            print('')
-            if seeds_dict["location"] < part1:
-                part1=seeds_dict["location"]
-
-                print(f"Location is {part1}")
-
-    return part1, part2
-
-
 def initialize ( file ):
 
     dirname = os.path.dirname(__file__)
@@ -130,77 +38,101 @@ def initialize ( file ):
 
     return seeds, maps, targets
 
+def compute_target_number( source_number, source_range, source_category, maps ):
 
-def target_ranges(input_number, input_range, rules):
-    """_summary_
+    target_number=source_number
+    remaining_range=1
 
-    Args:
-        first_number (_type_): _description_
-        range (_type_): _description_
-        rules (_type_): Rules [[dst_start, src_start, nb]]
+    target_category=""
 
-    Returns:
-        _type_: _description_
-    """  
-
-    splitted_ranges=[]
-
-
-    while True:
-        first_target, availability_range = compute_target_number(input_number, rules)
-        splitted_ranges.append({"item_number":first_target , "range":availability_range})
-        if availability_range > input_range:
-            # The whole range is covered
+    for key in maps:
+        source, target=key.split("-to-")
+        if source == source_category:
             break
-        else:
-            # Need to split the range and compute another
-            input_number = input_number + availability_range + 1
-            input_range = input_range - availability_range
+    
+    rule_found=False
+    next_range=1e12
+    # Check if the source is in a range of the rules
+    for rule in maps[source_category + "-to-" + target]["rules"]:
+        if rule[0] - target_number and rule[0] > target_number: next_range=target_number + rule[0]
+        if (source_number >= rule[1]) and (source_number < (rule[1] + rule[2])):
+            # I am in the correct range
+            rule_found=True
+            target_number = source_number - rule[1] + rule[0]
+            remaining_range = rule[0] + rule[2] - target_number
+            if remaining_range > source_range:
+                remaining_range=source_range
+            break
 
-    return splitted_ranges
+    if not rule_found:
+        logging.debug(f"No rule is found. No translation on part of the range")
+        if next_range == 1e12:
+            remaining_range=source_range
+        else:
+            remaining_range=next_range-target_number
+    
+    # Stop condition for recursion
+    if target != 'location':
+        target_number, remaining_range = compute_target_number(target_number,remaining_range,target, maps)
+    return target_number, remaining_range
 
 def solve2( file ):
-
-    part1 = 0
-    part2 = 1
-
-    seeds, maps, targets = initialize(file)
+    t0_start = perf_counter()
 
     part1=1e12
+    part2=1e12
+    solution={"part1": 1e12, "part2":1e12}
+
+    seeds, maps, targets = initialize(file)
 
     total_of_seeds=0
     for seed_index in range(0,len(seeds),2):
         total_of_seeds += seeds[seed_index+1]
     print(f"Number of seeds : {total_of_seeds}")
-    t1_start = perf_counter()
 
     # All the maps are done, compute way
 
-    for seed_index in range(0,len(seeds),2):
-        first_seed=seeds[seed_index]
-        range_for_seeds=seeds[seed_index+1]
+    seed_range={}
+    t0_stop = perf_counter()
 
-        source_category="seed"
-        target_category=targets[source_category]
-        rules=maps[source_category+"-to-"+target_category]["rules"]
+    for part in ["part1", "part2"]:
+        t1_start = perf_counter()  
+        increment=1
+        if part == "part2":increment=2
+        for seed_index in range(0,len(seeds),increment):
+            source_number=seeds[seed_index]
+            source_range=1
+            if part == "part2":source_range=seeds[seed_index+1]
+            seed_range[source_number]=source_range
 
-        updated_ranges = target_ranges(first_seed, range_for_seeds, rules)
+        while seed_range:
+            logging.debug(f"Seed ranges number: {len(seed_range)}")
+            source_category="seed"
 
+            source_number=next(iter(seed_range))
+            source_range=seed_range.pop(source_number)
 
-    return part1, part2
+            target_number, target_range= compute_target_number( source_number, source_range, source_category, maps )
+            
+            if solution[part] > target_number:
+                solution[part]=target_number
 
-
-
+            logging.debug(f"Target number is {target_number} and is range is {target_range}")
+            if source_range > target_range:
+                seed_range[source_number+target_range]=source_range-target_range
+        t1_stop = perf_counter()
+        logging.info(f"Elapsed time {part}(s): {(t1_stop-t1_start) + (t0_stop-t0_start)}")
+    return solution["part1"], solution["part2"]
 
 def main() -> int:
     # --- Day 5: If You Give A Seed A Fertilizer ---
     # https://adventofcode.com/2023/day/5
     # See: https://github.com/morgoth1145/advent-of-code/blob/9344c2e30130f4d555e7b7393b65a52646bae00f/2023/05/solution.py
     t1_start = perf_counter()
-    value_part1, value_part2 = solve2( "inputs/test2.input" )
+    value_part1, value_part2 = solve2( "inputs/personnal.input" )
     t1_stop = perf_counter()
     print(f"Day 5: part 1 is {value_part1} and part 2 is {value_part2}.")
-    print(f"Elapsed time(s): {t1_stop-t1_start}")
+    print(f"Elapsed total time(s): {t1_stop-t1_start}")
     return 0
 
 if __name__ == '__main__':
