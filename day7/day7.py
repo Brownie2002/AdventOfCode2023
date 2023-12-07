@@ -52,12 +52,10 @@ def compute_hand_value(hand, part):
         # Handle the Joker
         num_J=values["J"]
         if num_J != 5:
-            # Be carefull, this is not a copy
-            hand_without_J = values
-            del hand_without_J["J"]
+            del values["J"]
             # Update the better hand
-            key_better_hand=max(hand_without_J.items(), key=lambda x: x[1])[0]
-            hand_without_J[key_better_hand] = hand_without_J[key_better_hand] + num_J
+            key_better_hand=max(values.items(), key=lambda x: x[1])[0]
+            values[key_better_hand] = values[key_better_hand] + num_J
     for key in values:
         hand_value = hand_value + _score[values[key]]
 
