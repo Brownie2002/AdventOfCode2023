@@ -8,7 +8,7 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
 def initialize ( file ):
 
-    dirname = os.path.dirname(__file__)
+    dirname = os.path.dirname( __file__ )
     filename = os.path.join(dirname, file)
 
     seeds=[]
