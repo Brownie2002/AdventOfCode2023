@@ -1,6 +1,9 @@
+import logging
 import os
 import sys
 import pandas as pd
+
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
 def aoc_day3( file ):
 
@@ -70,10 +73,13 @@ def aoc_day3( file ):
 
     return part1, part2
 
+
+
 def main() -> int:
     # --- Day 3: Gear Ratios ---
     value_part1, value_part2 = aoc_day3( "inputs/day3.input" )
-    print(f"Day 3: part 1 is {value_part1} and part 2 is {value_part2}.")
+
+    logging.info(f"Day 3: part 1 is {value_part1} and part 2 is {value_part2}.")
 
     return 0
 
