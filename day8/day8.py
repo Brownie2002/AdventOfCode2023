@@ -91,6 +91,10 @@ def solve( file ):
                     # All loops are detected
                     found_end=True
 
+                    # Solutions are looping. We need to find when the loops finish all together.
+                    # nb_loop_A * size_loop_A = nb_loop_B * size_loop_B = PPCM(size_loop_A, size_loop_A)
+                    # PPCM = Plus Petit Multiple Commun (See https://w.wiki/8RG9)
+                    # PPCM can be computed from PGCD and Euclide algorithme
                     PPCM=loops[0]
                     for item in range(1,len(loops)):
                         PGCD=euclide(PPCM,loops[item])
