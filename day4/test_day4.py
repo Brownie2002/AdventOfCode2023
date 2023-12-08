@@ -1,4 +1,4 @@
-from aoc_day4 import aoc_day4
+from day4 import aoc_day4
 
 def test_example():
     part1, part2 = aoc_day4("inputs/day4_test1.input")

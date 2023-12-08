@@ -6,6 +6,7 @@ from time import perf_counter
 from collections import Counter, OrderedDict
 import pandas as pd
 
+from aoc_lib.aoc_math import euclide
 
 import re
 
@@ -28,10 +29,6 @@ def initialize ( file ):
                     instructions=line.strip()
 
     return maps, instructions
-
-def euclide(a, b):
-    if b == 0: return a
-    return euclide(b, a % b)
 
 def compute_next_position(positions, maps, instructions):
     # Cannot do recursion, too many
