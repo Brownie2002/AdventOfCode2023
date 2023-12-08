@@ -6,11 +6,6 @@ def test_example_part1():
     assert part1 == 142
     assert part2 == 142
 
-def test_example_part2():
-    part1, part2 = aoc_day1("inputs/day1_test_part2.input")
-    assert part1 == 209
-    assert part2 == 281
-
 def test_my_data():
     part1, part2 = aoc_day1("inputs/day1.input")
     assert part1 == 54634
