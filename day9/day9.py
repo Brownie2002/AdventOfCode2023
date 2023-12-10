@@ -1,14 +1,10 @@
 import logging
-import math
+
 import os
 import sys
 from time import perf_counter
-from collections import Counter, OrderedDict
-import pandas as pd
 
-from aoc_lib.aoc_math import euclide
 import numpy as np
-import re
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
@@ -79,7 +75,7 @@ def main() -> int:
     value_part1, value_part2 = solve( "inputs/personnal.input" )
     t1_stop = perf_counter()
     logging.info(f"Elapsed total time: {t1_stop-t1_start:.3f}(s)")
-    print(f"Day 8: part 1 is [{value_part1}] and part 2 is [{value_part2}].")
+    print(f"Day 9: part 1 is [{value_part1}] and part 2 is [{value_part2}].")
     return 0
 
 if __name__ == '__main__':

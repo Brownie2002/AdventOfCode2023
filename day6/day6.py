@@ -1,5 +1,4 @@
 import logging
-import math
 import os
 import sys
 from time import perf_counter

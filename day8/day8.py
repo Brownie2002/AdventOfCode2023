@@ -1,10 +1,7 @@
 import logging
-import math
 import os
 import sys
 from time import perf_counter
-from collections import Counter, OrderedDict
-import pandas as pd
 
 from aoc_lib.aoc_math import euclide
 
@@ -90,7 +87,7 @@ def solve( file ):
 
                     # Solutions are looping. We need to find when the loops finish all together.
                     # nb_loop_A * size_loop_A = nb_loop_B * size_loop_B = PPCM(size_loop_A, size_loop_A)
-                    # PPCM = Plus Petit Multiple Commun (See https://w.wiki/8RG9)
+                    # PPCM = Plus Petit Commun Multiple (See https://w.wiki/8RG9)
                     # PPCM can be computed from PGCD and Euclide algorithme
                     PPCM=loops[0]
                     for item in range(1,len(loops)):
@@ -98,8 +95,6 @@ def solve( file ):
                         PPCM=PPCM*loops[item]/PGCD
 
                     solution[part] = int(PPCM)
-
-
         
         t1_stop = perf_counter()  
         logging.info(f"Elapse time for {part} is {t1_stop-t1_start:.3f}(s).")
