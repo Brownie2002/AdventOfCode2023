@@ -214,11 +214,9 @@ def solve( file ):
             if pd.isna(item):
                 if ( first_delta and first_delta < 0) and crossing_counter < 0:
                     df[j][i]="☺"
-                    df[j][i]=crossing_counter
                     number_in = number_in + 1
                 elif ( first_delta and first_delta > 0) and crossing_counter > 0:
                     df[j][i]="☺"
-                    df[j][i]=crossing_counter
                     number_in = number_in + 1                    
 
     solution["part1"] = int(counter/2)
