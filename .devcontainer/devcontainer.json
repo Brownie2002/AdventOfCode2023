@@ -18,9 +18,10 @@
                 }
             },
             "extensions": [
-                "ms-python.python",
-                "njpwerner.autodocstring"
-            ]
+				"ms-python.python",
+				"njpwerner.autodocstring",
+				"charliermarsh.ruff"
+			]
         }
     },
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
