@@ -120,16 +120,6 @@ def test_positions(point, incoming_value):
 
     return True
 
-def compute_right_left_position(position):
-
-    right={"E":[0,1],"W":[0,-1],"N":[1,0],"S":[-1,0]}
-    left={"E":[0,-1],"W":[0,+1],"N":[-1,0],"S":[1,0]}
-
-    point_right = Point(position.x+right[position.direction][0],position.y+right[position.direction][1])
-    point_left = Point(position.x+left[position.direction][0],position.y+left[position.direction][1])
-
-    return point_right, point_left
-
 def solve( file ):
     solution={"part1": 0, "part2":-1}
 
