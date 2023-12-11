@@ -6,5 +6,8 @@
     "python.testing.pytestEnabled": true,
     "python.autoComplete.extraPaths": [
         "${workspaceFolder}/aoc_lib"
-      ]
+    ],
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/aoc_lib"
+    ]
 }
