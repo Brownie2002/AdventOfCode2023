@@ -1,11 +1,11 @@
 import logging
-
 import os
 import sys
 from time import perf_counter
 
-import numpy as np
 import pandas as pd
+
+from aoc_lib.aoc_graph import graph
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
@@ -180,7 +180,6 @@ def solve( file ):
     df = pd.DataFrame().reindex_like(df_sol)
     df = df.fillna("Z")
 
-    symbols={"N":"↑","S":"↓","E":"→","W":"←","":"*"}
     symbols_dict={"|":"║","-":"═","L":"╚","J":"╝","7":"╗","F":"╔","S":"*",".":" "}
 
     # Solution given by : https://www.reddit.com/r/adventofcode/comments/18eza5g
@@ -205,8 +204,8 @@ def solve( file ):
                 delta = item.counter - item_below.counter
                 if delta in [-1,1]:
                     # if we enter for the first time
-                    if inside==False:
-                        inside==True
+                    if inside is False:
+                        inside = True
                         first_delta = delta
                     crossing_counter=crossing_counter + delta
 
@@ -223,8 +222,10 @@ def solve( file ):
     solution["part2"] = number_in
 
     ### Ending of usefull code
-    t1_stop = perf_counter()  
+    t1_stop = perf_counter()
     logging.info(f"Elapse time for both parts is {t1_stop-t1_start:.3f}(s).")
+
+    graph(df)
 
     return solution["part1"], solution["part2"]
 
@@ -232,7 +233,7 @@ def main() -> int:
     # --- Day 10: Pipe Maze ---
 
     t1_start = perf_counter()
-    value_part1, value_part2 = solve( "inputs/test3.input" )
+    value_part1, value_part2 = solve( "inputs/test1.input" )
     t1_stop = perf_counter()
     logging.info(f"Elapsed total time: {t1_stop-t1_start:.3f}(s)")
     print(f"Day 10: part 1 is [{value_part1}] and part 2 is [{value_part2}].")
