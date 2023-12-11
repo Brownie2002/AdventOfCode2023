@@ -11,6 +11,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
         git \
         zsh \
         wget \
+        openssh-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
