@@ -43,18 +43,45 @@ def count_arrangements_subgroup(nb_items, group_to_test):
 def place_a_group(report, groups):
 
     group_size = groups[0]
-    position = False
-    index = -1
-    while not position:
-        index += 1
-        # Group can be followed only by "?" or "."
-        if report[index + group_size] != "#":
-            position = True   
+    group = report[0:group_size]
+    if group_size > len(report):
+        # Impossible, group bigger than report
+        return -1, None
+    
+    if group_size < len(report) and report[group_size] == "#":
+        # Impossible, group cannot be followed by "#"
+        return -2, 0
 
-    group = report[index:index+group_size]
+    if len(groups) == 1:
+        # This group is the last.
+        # Test ending conditions
+        if "#" in report[group_size:]:
+            # Impossible, the last group has to catch remaining "#"
+            return -3, 0
+        else:
+            # This last group is OK. We count the number of possibilities with this group
+            nb = count_arrangements_subgroup(group_size, group)
+            if nb <= 0:
+                raise Exception("Nb. of arrangements should be a least 1...")
+            return nb, None
 
-    next_report = report[index + group_size + 1:]
-    place_a_group(next_report, groups[1:])
+    next_report = report[group_size + 1:]
+    nb_arrangements = 0
+    a_arrangements = {}
+    a_arrangements[len(groups)]=[]
+    while True:
+        nb_arrangements, toto = place_a_group(next_report, groups[1:])
+        if nb_arrangements < 0 and nb_arrangements != -4:
+            # There is no more groups to test at this level
+            if toto:
+                a_arrangements.update(toto)
+            # Current group level is completed
+            nb_arrangements == -4
+            return nb_arrangements, a_arrangements
+        a_arrangements[len(groups)].append(nb_arrangements)      
+        if next_report[0] != "#":
+            # Testing the other positions 
+            next_report = next_report[1:]
 
     # Need to stop and test all possible groups !!
     return index, group
@@ -63,18 +90,14 @@ def count_arrangements(report, groups):
 
     num_arrangements = 0
 
-    num_groups = len(groups)
-
     report_tmp = report
-    group_size = groups[0]
 
     while True:
         # Place first group
-        index, group = place_a_group(report_tmp, groups)
-        report_tmp = report[index + group_size + 1:] # Remove the item after group. This is a "."
-
-        print(index)
-
+        nb_arrangements, arrangements = place_a_group(report_tmp, groups)
+        if nb_arrangements == -2:
+            # This group is followed by "#", test next position 
+            report_tmp=report_tmp[1:]
     
 
     obvious_groups = list(filter(None,report.split(".") ))
