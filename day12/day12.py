@@ -40,11 +40,42 @@ def count_arrangements_subgroup(nb_items, group_to_test):
     logging.debug(f"The sub-group {group_to_test} has {nb_sol} possibilities.")
     return nb_sol
 
+def place_a_group(report, groups):
+
+    group_size = groups[0]
+    position = False
+    index = -1
+    while not position:
+        index += 1
+        # Group can be followed only by "?" or "."
+        if report[index + group_size] != "#":
+            position = True   
+
+    group = report[index:index+group_size]
+
+    next_report = report[index + group_size + 1:]
+    place_a_group(next_report, groups[1:])
+
+    # Need to stop and test all possible groups !!
+    return index, group
+
 def count_arrangements(report, groups):
 
     num_arrangements = 0
 
     num_groups = len(groups)
+
+    report_tmp = report
+    group_size = groups[0]
+
+    while True:
+        # Place first group
+        index, group = place_a_group(report_tmp, groups)
+        report_tmp = report[index + group_size + 1:] # Remove the item after group. This is a "."
+
+        print(index)
+
+    
 
     obvious_groups = list(filter(None,report.split(".") ))
     nb_sol_groups = []
